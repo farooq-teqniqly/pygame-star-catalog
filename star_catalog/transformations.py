@@ -68,7 +68,7 @@ class LinearCoordinateSystemTransform:
             target_min, target_max = target_coordinate_range
             return target_max - (((coordinate - source_min) / (source_max - source_min)) * (target_max - target_min))
 
-        def ensure_range(src_coordinates: Tuple[float, float]) -> None:
+        def ensure_bounds(src_coordinates: Tuple[float, float]) -> None:
             _x, _y = src_coordinates
             if _x < self._source.x_range[0] or _x > self._source.x_range[1]:
                 raise ValueError(
@@ -77,7 +77,7 @@ class LinearCoordinateSystemTransform:
                 raise ValueError(
                     f"y coordinate {_y} is outside of the source coordinate system range {self._source.y_range}")
 
-        ensure_range(source_coordinates)
+        ensure_bounds(source_coordinates)
         x, y = source_coordinates
 
         if x >= 0:
