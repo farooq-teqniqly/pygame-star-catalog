@@ -1,0 +1,1 @@
+# pygame-star-catalog
