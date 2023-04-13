@@ -53,16 +53,27 @@ class LinearCoordinateSystemTransform:
 
         Returns:
             Tuple[float, float]: A tuple representing the transformed coordinates in the target coordinate system.
+
+        Raises:
+            ValueError: If the source coordinates are outside the bounds of the source coordinate system.
         """
 
+        def transform_coordinate(coordinate, source_coordinate_range, target_coordinate_range):
+            source_min, source_max = source_coordinate_range
+            target_min, target_max = target_coordinate_range
+            return ((coordinate - source_min) / (source_max - source_min)) * (target_max - target_min) + target_min
+
+        def ensure_range(src_coordinates: Tuple[float, float]) -> None:
+            _x, _y = src_coordinates
+            if _x < self._source.x_range[0] or _x > self._source.x_range[1]:
+                raise ValueError(
+                    f"x coordinate {_x} is outside of the source coordinate system range {self._source.x_range}")
+            if _y < self._source.y_range[1] or _y > self._source.y_range[0]:
+                raise ValueError(
+                    f"y coordinate {_y} is outside of the source coordinate system range {self._source.y_range}")
+
+        ensure_range(source_coordinates)
         x, y = source_coordinates
-
-        source_x_min, source_x_max = self._source.x_range
-        target_x_min, target_x_max = self._target.x_range
-        new_x = ((x - source_x_min) / (source_x_max - source_x_min)) * (target_x_max - target_x_min) + target_x_min
-
-        source_y_min, source_y_max = self._source.y_range
-        target_y_min, target_y_max = self._target.y_range
-        new_y = ((y - source_y_min) / (source_y_max - source_y_min)) * (target_y_max - target_y_min) + target_y_min
-
+        new_x = transform_coordinate(x, self._source.x_range, self._target.x_range)
+        new_y = transform_coordinate(y, self._source.y_range, self._target.y_range)
         return new_x, new_y
