@@ -1,6 +1,6 @@
 import pytest
 
-from star_catalog.main import CoordinateSystem, LinearCoordinateSystemTransform
+from star_catalog.transformations import CoordinateSystem, LinearCoordinateSystemTransform
 
 
 @pytest.mark.parametrize("source_x_range,source_y_range,target_x_range,target_y_range,source_coords,expected_result", [
