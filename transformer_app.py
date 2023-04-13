@@ -1,5 +1,6 @@
 import argparse
 import urllib.request
+import defaults
 
 from star_catalog.star import StarReader
 from star_catalog.transformations import CoordinateSystem, LinearCoordinateSystemTransform
@@ -17,7 +18,7 @@ def main(input_url: str, output_path: str):
     reader = StarReader(urllib.request.urlopen(input_url))
     stars = list(reader.read(transform_coordinates))
 
-    with open(output_path, "w", encoding="utf-8") as output_file:
+    with open(output_path, "w", encoding=defaults.encoding) as output_file:
         output_file.writelines([f"{star.coordinates[0]},{star.coordinates[1]},{star.magnitude}\n" for star in stars])
 
 

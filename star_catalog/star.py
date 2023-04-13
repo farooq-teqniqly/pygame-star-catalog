@@ -7,6 +7,7 @@ Classes:
 
 """
 
+import defaults
 from io import TextIOWrapper
 from dataclasses import dataclass
 from typing import Tuple, Generator, Callable, Optional
@@ -70,7 +71,7 @@ class StarReader:
         """
         for line in self._stream:
             if isinstance(line, bytes):
-                line = line.decode("utf-8").strip()
+                line = line.decode(defaults.encoding).strip()
             else:
                 line = line.strip()
 

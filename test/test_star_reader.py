@@ -1,14 +1,13 @@
+import defaults
 from io import BytesIO, TextIOWrapper
 from typing import Callable
 
 from star_catalog.star import StarReader, Star
 
-DEFAULT_ENCODING = "utf-8"
-
 
 def test_can_create_star_from_string():
     line = "0.994772 0.023164 -0.099456 28 4.61 3"
-    stream = TextIOWrapper(BytesIO(line.encode(DEFAULT_ENCODING)))
+    stream = TextIOWrapper(BytesIO(line.encode(defaults.encoding)))
     reader = StarReader(stream)
     stars = list(reader.read())
 
@@ -37,7 +36,7 @@ def test_can_create_star_from_byte_string():
 
 def test_can_transform_star_data():
     line = "0 0 0 1 3 5"
-    stream = TextIOWrapper(BytesIO(line.encode(DEFAULT_ENCODING)))
+    stream = TextIOWrapper(BytesIO(line.encode(defaults.encoding)))
     reader = StarReader(stream)
     transform: Callable[[tuple], tuple] = lambda data: tuple(x + 1 for x in data)
     stars = list(reader.read(transform))
