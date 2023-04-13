@@ -9,7 +9,7 @@ Classes:
 
 from io import TextIOWrapper
 from dataclasses import dataclass
-from typing import Tuple, Generator
+from typing import Tuple, Generator, Callable, Optional
 
 
 @dataclass
@@ -43,11 +43,41 @@ class StarReader:
             print(star)
     """
     def __init__(self, stream: TextIOWrapper):
+        """
+            Constructs a new StarReader object.
+
+            Args:
+                stream: A text stream containing star data.
+
+            Returns:
+                None.
+        """
         self._stream = stream
 
-    def read(self) -> Generator[Star, None, None]:
+    def read(self, transform: Optional[Callable[[tuple], tuple]] = None) -> Generator[Star, None, None]:
+        """
+            Reads star data from the stream and yields Star objects.
+
+            Args:
+                transform: A function that takes a tuple of star coordinates and magnitude as input and returns a
+                           transformed tuple. Default is None.
+
+            Yields:
+                Star: A Star object representing a star with coordinates and magnitude.
+
+            Raises:
+                None.
+        """
         for line in self._stream:
-            line = line.strip()
+            if isinstance(line, bytes):
+                line = line.decode("utf-8").strip()
+            else:
+                line = line.strip()
+
             fields = line.split(" ")
             x, y, z, _, magnitude = map(float, fields[:5])
+
+            if transform is not None:
+                x, y, z, magnitude = transform((x, y, z, magnitude))
+
             yield Star(coordinates=(x, y, z), magnitude=magnitude)

@@ -58,22 +58,36 @@ class LinearCoordinateSystemTransform:
             ValueError: If the source coordinates are outside the bounds of the source coordinate system.
         """
 
-        def transform_coordinate(coordinate, source_coordinate_range, target_coordinate_range):
+        def transform_coordinate_a(coordinate, source_coordinate_range, target_coordinate_range):
             source_min, source_max = source_coordinate_range
             target_min, target_max = target_coordinate_range
             return ((coordinate - source_min) / (source_max - source_min)) * (target_max - target_min) + target_min
+
+        def transform_coordinate_b(coordinate, source_coordinate_range, target_coordinate_range):
+            source_min, source_max = source_coordinate_range
+            target_min, target_max = target_coordinate_range
+            return target_max - (((coordinate - source_min) / (source_max - source_min)) * (target_max - target_min))
 
         def ensure_range(src_coordinates: Tuple[float, float]) -> None:
             _x, _y = src_coordinates
             if _x < self._source.x_range[0] or _x > self._source.x_range[1]:
                 raise ValueError(
                     f"x coordinate {_x} is outside of the source coordinate system range {self._source.x_range}")
-            if _y < self._source.y_range[1] or _y > self._source.y_range[0]:
+            if _y < self._source.y_range[0] or _y > self._source.y_range[1]:
                 raise ValueError(
                     f"y coordinate {_y} is outside of the source coordinate system range {self._source.y_range}")
 
         ensure_range(source_coordinates)
         x, y = source_coordinates
-        new_x = transform_coordinate(x, self._source.x_range, self._target.x_range)
-        new_y = transform_coordinate(y, self._source.y_range, self._target.y_range)
+
+        if x >= 0:
+            new_x = transform_coordinate_a(x, self._source.x_range, self._target.x_range)
+        else:
+            new_x = transform_coordinate_b(x * -1, self._source.y_range, self._target.y_range)
+
+        if y >= 0:
+            new_y = transform_coordinate_b(y, self._source.y_range, self._target.y_range)
+        else:
+            new_y = transform_coordinate_a(y * -1, self._source.x_range, self._target.x_range)
+
         return new_x, new_y
