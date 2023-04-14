@@ -32,15 +32,8 @@ def get_star_size(star: Star) -> int:
 
 
 def draw_star(mode: str, star: Star, margin: int, color: pygame.Color, screen: Union[Surface, SurfaceType]):
-    if mode == "plain":
-        height = DEFAULT_SIZE
-        width = DEFAULT_SIZE
-    else:
-        size = get_star_size(star)
-        height = size
-        width = size
-
-    rect = Rect(int(star.coordinates[0] + margin), int(star.coordinates[1] + margin), width, height)
+    size = {"plain": DEFAULT_SIZE, "magnitude": get_star_size(star)}[mode]
+    rect = Rect(int(star.coordinates[0] + margin), int(star.coordinates[1] + margin), size, size)
     pygame.draw.rect(screen, color, rect)
 
 
