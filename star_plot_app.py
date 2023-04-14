@@ -2,7 +2,7 @@ import argparse
 from typing import List, Union
 
 import pygame
-from pygame import Surface, SurfaceType
+from pygame import Surface, SurfaceType, Rect
 
 import defaults
 from star_catalog.star import Star
@@ -33,11 +33,15 @@ def get_star_size(star: Star) -> int:
 
 def draw_star(mode: str, star: Star, margin: int, color: pygame.Color, screen: Union[Surface, SurfaceType]):
     if mode == "plain":
-        size = DEFAULT_SIZE
+        height = DEFAULT_SIZE
+        width = DEFAULT_SIZE
     else:
         size = get_star_size(star)
+        height = size
+        width = size
 
-    pygame.draw.rect(screen, color, (int(star.coordinates[0] + margin), int(star.coordinates[1] + margin), size, size))
+    rect = Rect(int(star.coordinates[0] + margin), int(star.coordinates[1] + margin), width, height)
+    pygame.draw.rect(screen, color, rect)
 
 
 def init_screen(screen_width: int, screen_height: int) -> Union[Surface, SurfaceType]:
